@@ -1,0 +1,123 @@
+//
+//  XLBMessageViewController.m
+//  xiaolaba
+//
+//  Created by lin on 2017/6/29.
+//  Copyright © 2017年 jxcode. All rights reserved.
+//
+
+#import "XLBMessageViewController.h"
+#import "XLBMessageCell.h"
+
+@interface XLBMessageViewController ()
+
+@property (weak, nonatomic) IBOutlet UITableView *messageTable;
+@property (nonatomic, strong) NSMutableArray *dataSource;
+
+@end
+
+@implementation XLBMessageViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
+    
+    self.bql_rightWord = @"我的好友";
+    [self setup];
+//    [[EMClient sharedClient] loginWithUsername:@"1002"
+//                                      password:@"123456"
+//                                    completion:^(NSString *aUsername, EMError *aError) {
+//                                        if (!aError) {
+//                                            NSLog(@"登录成功");
+//                                        } else {
+//                                            NSLog(@"登录失败");
+//                                        }
+//                                    }];
+}
+
+- (void)setup {
+    
+    self.messageTable.rowHeight = 65;
+    self.messageTable.backgroundColor = RGB(247, 247, 247);
+    self.messageTable.tableFooterView = [UIView new];
+    [self.dataSource addObjectsFromArray:@[@{@"img":@"xitong",
+                                             @"title":@"系统消息",
+                                             @"subtitle":@"小喇叭更新啦",
+                                             @"time":@"17/08/22"},
+                                           @{@"img":@"nuoche",
+                                             @"title":@"挪车通知",
+                                             @"subtitle":@"您收到一条挪车通知，请查收！",
+                                             @"time":@"17/08/22"},
+                                           @{@"img":@"xiaoxi",
+                                             @"title":@"消息通知",
+                                             @"subtitle":@"吴彦祖请求加您为好友",
+                                             @"time":@"17/08/22"}]];
+}
+
+- (NSInteger )tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    return self.dataSource.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    XLBMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([XLBMessageCell class])];
+    if (cell == nil) {
+        cell = [[NSBundle mainBundle] loadNibNamed:NSStringFromClass([XLBMessageCell class]) owner:self options:nil].lastObject;
+    }
+    cell.data = self.dataSource[indexPath.row];
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    switch (indexPath.row) {
+        case 0: {
+            [[BQLRouter router] push:@"XLBMsgSystemViewController" hideBar:YES];
+        }
+            break;
+        case 1: {
+            [[BQLRouter router] push:@"XLBMoveNotifitionViewController" hideBar:YES];
+        }
+            break;
+        case 2: {
+            [[BQLRouter router] push:@"XLBMsgNotifitionViewController" hideBar:YES];
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
+
+- (void)rightClick {
+    
+    [[BQLRouter router] push:@"XLBMyFriendsViewController" hideBar:YES];
+}
+
+- (NSMutableArray *)dataSource {
+    
+    if(!_dataSource) {
+        _dataSource = [NSMutableArray array];
+    }
+    return _dataSource;
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

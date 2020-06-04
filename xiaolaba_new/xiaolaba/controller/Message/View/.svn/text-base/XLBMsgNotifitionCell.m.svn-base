@@ -1,0 +1,82 @@
+//
+//  XLBMsgNotifitionCell.m
+//  xiaolaba
+//
+//  Created by lin on 2017/7/26.
+//  Copyright © 2017年 jxcode. All rights reserved.
+//
+
+#import "XLBMsgNotifitionCell.h"
+#import "UIImageView+YYWebImage.h"
+
+@interface XLBMsgNotifitionCell ()
+
+@property (weak, nonatomic) IBOutlet UIImageView *image;
+@property (weak, nonatomic) IBOutlet UILabel *title;
+@property (weak, nonatomic) IBOutlet UILabel *subtitle;
+@property (weak, nonatomic) IBOutlet UIButton *handle;
+
+@end
+
+@implementation XLBMsgNotifitionCell
+
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    // Initialization code
+}
+
+- (void)setModel:(XLBMsgNotifitionModel *)model {
+    
+    [self.image setImageWithURL:[NSURL URLWithString:model.image]
+                    placeholder:[UIImage imageNamed:@"weitouxiang"]
+                        options:YYWebImageOptionSetImageWithFadeAnimation
+                        manager:nil
+                       progress:nil
+                      transform:^UIImage * _Nullable(UIImage * _Nonnull image, NSURL * _Nonnull url) {
+                          return [image circleImage];
+                      } completion:nil];
+    self.title.text = model.title;
+    self.subtitle.text = model.subtitle;
+    
+    NSLog(@"status = %ld",model.status);
+    switch (model.status) {
+        case 0: {
+            [self.handle setTitle:@"接受" forState:0];
+            [self.handle setTitleColor:[UIColor whiteColor] forState:0];
+            self.handle.backgroundColor = kThemeColor;
+            self.handle.layer.cornerRadius = 3;
+            self.handle.enabled = YES;
+        }
+            break;
+        case 1: {
+            [self.handle setTitle:@"等待验证" forState:0];
+            [self.handle setTitleColor:RGB(208, 208, 208) forState:0];
+            self.handle.backgroundColor = [UIColor clearColor];
+            self.handle.enabled = NO;
+        }
+            break;
+        case 2: {
+            [self.handle setTitle:@"已添加" forState:0];
+            [self.handle setTitleColor:RGB(208, 208, 208) forState:0];
+            self.handle.backgroundColor = [UIColor clearColor];
+            self.handle.enabled = NO;
+        }
+            break;
+            
+        default:
+            break;
+    }
+    _model = model;
+}
+
+- (IBAction)handleClick:(id)sender {
+    
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:animated];
+
+    // Configure the view for the selected state
+}
+
+@end

@@ -1,0 +1,17 @@
+//
+//  XLBSystemMsgModel.h
+//  xiaolaba
+//
+//  Created by lin on 2017/7/26.
+//  Copyright © 2017年 jxcode. All rights reserved.
+//
+
+#import "XLBBaseModel.h"
+
+@interface XLBSystemMsgModel : XLBBaseModel
+
+@property (nonatomic, assign) BOOL read;
+@property (nonatomic, copy) NSString *msg;
+@property (nonatomic, copy) NSString *time;
+- (void) toStringLog ;
+@end

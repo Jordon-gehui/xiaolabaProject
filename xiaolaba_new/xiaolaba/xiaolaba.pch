@@ -1,0 +1,127 @@
+//
+//  xiaolaba.pch
+//  xiaolaba
+//
+//  Created by 斯陈 on 2017/9/10.
+//  Copyright © 2017年 jackzhang. All rights reserved.
+//
+
+#ifndef xiaolaba_pch
+#define xiaolaba_pch
+
+//debug模式输出打印  release模式不输出
+#if DEBUG
+#define NSLog(FORMAT, ...) fprintf(stderr,"\nfunction:%s line:%d content:%s\n", __FUNCTION__, __LINE__, [[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);
+#else
+#define NSLog(FORMAT, ...) nil;
+#endif
+
+//本地类
+
+#import "DetailImageView.h"
+#import "BaseViewController.h"
+#import "RootTabbarController.h"
+#import "RootNavigationController.h"
+#import "XLBApi.h"
+#import "DetailModel.h"
+#import "XLBUser.h"
+#import "OwnerViewController.h"
+#import "UIColor+Utils.h"
+#import "UIImage+Util.h"
+#import "JXutils.h"
+#import "DefaultList.h"
+#import "BQLAuthEngine.h"
+#import "ImageReviewViewController.h"
+#import "XLBCache.h"
+
+//封装类
+#import "UIDeviceHardware.h"
+#import "NSString+Category.h"
+#import "UIImage+Fit.h"
+#import "UITextView+Category.h"
+#import "UITextField+Category.h"
+#import "UITextView+MesTextView.h"
+#import "UIViewExt.h"
+#import "UIView+Category.h"
+#import "UIView+AdjustFrame.h"
+#import "UIViewController+Category.h"
+#import "UINavigationController+Categoty.h"
+#import "UIButton+EnlargeTouchArea.h"
+#import "ZZCHelper.h"
+#import "BQLAuthEngine.h"
+#import "XLBShareView.h"
+#import "BQLShareModel.h"
+#import "XLBRefreshFooter.h"
+#import "XLBRefreshGifHeader.h"
+//第三方类
+#import <AFNetworking.h>
+#import <JPUSHService.h>
+#import <Masonry.h>
+#import <MBProgressHUD.h>
+#import <MJRefresh.h>
+#import <WechatAuthSDK.h>
+#import <MJExtension.h>
+#import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/UIButton+WebCache.h>
+#import "UMMobClick/MobClick.h"
+#import <FMDatabase.h>
+#define kWeakSelf(object) __weak typeof (object) weakSelf = object;
+
+
+#define max_phone_length 11
+#define max_code_length 6
+
+
+#define WIDTH                               self.view.frame.size.width
+#define HEIGHT                              self.view.frame.size.height
+
+//屏幕宽
+#define kSCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
+
+//屏幕高
+#define kSCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
+
+#define kiphone6_ScreenWidth kSCREEN_WIDTH/375.0
+#define kiphone6_ScreenHeight kSCREEN_HEIGHT/667.0
+
+//是否为空或是[NSNull null]  非空 return YES
+#define kNotNil(_ref)  (((_ref) != nil) && (![(_ref) isEqual:[NSNull null]]) && ![_ref isEqual: @""] && ![_ref isEqual: @"<null>"])
+
+#define kNotificationCenter [NSNotificationCenter defaultCenter]
+
+//16进制颜色值
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+
+// 颜色
+#define RGB(r,g,b) IOS10Later?[UIColor colorWithDisplayP3Red:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]:[UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]
+#define RGBA(r,g,b,a) IOS10Later?[UIColor colorWithDisplayP3Red:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)]:[UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)]
+
+// 判断iphone6+
+#define iPhone6Plus ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1242, 2208), [[UIScreen mainScreen] currentMode].size) : NO)
+
+// 判断iphone6
+#define iPhone6 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(750, 1334), [[UIScreen mainScreen] currentMode].size) : NO)
+
+// 判断iphone5s
+#define iPhone5s ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
+
+// 判断iphone4s
+#define iPhone4s ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 960), [[UIScreen mainScreen] currentMode].size) : NO)
+
+// 判断iphone x
+#define iPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
+
+
+// ios10以后的系统
+#define IOS10Later ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10.0 ? YES : NO)
+
+// ios10之前的系统
+#define IOS10Before ([[[UIDevice currentDevice] systemVersion] floatValue] < 10.0 ? YES : NO)
+
+//ios 11以后的系统
+#define IOS11Later ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0 ? YES : NO)
+
+//iOS 11以前的系统
+#define IOS11Before ([[[UIDevice currentDevice] systemVersion] floatValue] < 11.0 ? YES : NO)
+
+#endif /* xiaolaba_pch */

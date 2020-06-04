@@ -1,0 +1,18 @@
+//
+//  XLBAgeTableViewCell.h
+//  xiaolaba
+//
+//  Created by 戴葛辉 on 2017/9/18.
+//  Copyright © 2017年 jackzhang. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface XLBAgeTableViewCell : UITableViewCell
+
+@property (weak, nonatomic) IBOutlet UIImageView *seleImage;
+
+@property (nonatomic, copy)NSString *titles;
+
+
+@end

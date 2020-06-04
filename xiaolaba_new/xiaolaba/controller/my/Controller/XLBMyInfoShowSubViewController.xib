@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="XLBMyInfoShowSubViewController">
+            <connections>
+                <outlet property="meTable" destination="w7G-Cx-Aat" id="enC-V2-HxY"/>
+                <outlet property="meTableTop" destination="NzX-dw-v08" id="9G4-Ml-G73"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="w7G-Cx-Aat">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="9Ti-6J-wfU"/>
+                        <outlet property="delegate" destination="-1" id="9PZ-g1-Gfy"/>
+                    </connections>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="w7G-Cx-Aat" secondAttribute="bottom" id="AUS-wI-hfR"/>
+                <constraint firstItem="w7G-Cx-Aat" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Fqs-X2-61z"/>
+                <constraint firstItem="w7G-Cx-Aat" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="NzX-dw-v08"/>
+                <constraint firstAttribute="trailing" secondItem="w7G-Cx-Aat" secondAttribute="trailing" id="X8h-L4-HZt"/>
+            </constraints>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="AUS-wI-hfR"/>
+                    <exclude reference="Fqs-X2-61z"/>
+                    <exclude reference="NzX-dw-v08"/>
+                    <exclude reference="X8h-L4-HZt"/>
+                </mask>
+            </variation>
+            <variation key="heightClass=regular-widthClass=compact">
+                <mask key="constraints">
+                    <include reference="AUS-wI-hfR"/>
+                    <include reference="Fqs-X2-61z"/>
+                    <include reference="NzX-dw-v08"/>
+                    <include reference="X8h-L4-HZt"/>
+                </mask>
+            </variation>
+        </view>
+    </objects>
+</document>

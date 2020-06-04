@@ -1,0 +1,309 @@
+//
+//  BQLRouter.m
+//  BQLProject
+//
+//  Created by biqinglin on 2016/12/20.
+//  Copyright © 2016年 biqinglin. All rights reserved.
+//
+
+#import "BQLRouter.h"
+#import <objc/runtime.h>
+#import <UIKit/UIKit.h>
+
+#define kRouterIOS10Later ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10.0 ? YES : NO)
+
+@implementation BQLRouter
+
++ (instancetype)router {
+    
+    static BQLRouter *route;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        route = [[self.class alloc] init];
+    });
+    return route;
+}
+
+/**
+ 系统跳转 如跳转至appstore中的某个应用下载页面、打电话、跳转到其他app(需配置白名单)
+ 
+ @param url url
+ @return 打开成功or失败
+ */
+- (BOOL )open:(NSString *)url {
+    
+    if([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:url]]) {
+        if(kRouterIOS10Later) {
+            
+            __block BOOL isSuccess = NO;
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url] options:@{UIApplicationOpenURLOptionUniversalLinksOnly:@""} completionHandler:^(BOOL success) {
+                isSuccess = success;
+            }];
+            return isSuccess;
+        }
+        else {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+        }
+        return YES;
+    }
+    return NO;
+}
+
+/**
+ push跳转
+ 
+ @param route 类似url的一个路径 例如跳转至XXController route=@"XXController"
+ 若带参数跳转如参数id=1001，参数type=1 则route=@"XXController?id=1001&type=1"
+ */
+- (BOOL )push:(NSString *)route hideBar:(BOOL )hide {
+    
+    Class class = NSClassFromString([self getController:route]);
+    if(class) {
+        // 应该先判断route是否正确  此功能有待完善
+        //    if([self checkIsRouteCorrect:route]) {
+        //
+        //    }
+        
+        // 获取导航控制器
+        UIViewController *presentController = [self getPresentedViewController];
+        UINavigationController *pushClassStance = nil;
+        if([presentController isKindOfClass:[UINavigationController class]]) {
+            pushClassStance = (UINavigationController *)presentController;
+        }
+        else {
+            UITabBarController *tabVC = (UITabBarController *)[self getCurrentVC];
+            pushClassStance = (UINavigationController *)tabVC.viewControllers[tabVC.selectedIndex];
+        }
+        
+        UIViewController *targetController = [self getInstance:route];
+        targetController.hidesBottomBarWhenPushed = hide;
+        [pushClassStance pushViewController:targetController animated:YES];
+        
+        return YES;
+    }
+    else {
+        return NO;
+    }
+}
+
+/**
+ present跳转
+ 
+ @param route 同上
+ */
+- (BOOL )present:(NSString *)route {
+    
+    Class class = NSClassFromString([self getController:route]);
+    if(class) {
+        // 应该先判断route是否正确  此功能有待完善
+        //    if([self checkIsRouteCorrect:route]) {
+        //
+        //    }
+        
+        UIViewController *viewController = [self getCurrentVC];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:[self getInstance:route]];
+        [viewController presentViewController:nav animated:YES completion:nil];
+        
+        return YES;
+    }
+    else {
+        return NO;
+    }
+}
+
+- (id )getInstance:(NSString *)route {
+    
+    NSString *class = [self getController:route];
+    const char *className = [class cStringUsingEncoding:NSASCIIStringEncoding];
+    
+    // 从一个字串返回一个类
+    Class newClass = objc_getClass(className);
+    if (!newClass) {
+        // 创建一个类
+        Class superClass = [NSObject class];
+        newClass = objc_allocateClassPair(superClass, className, 0);
+        // 注册你创建的这个类
+        objc_registerClassPair(newClass);
+    }
+    // 创建对象
+    id instance = [[newClass alloc] init];
+    
+    // 对该对象赋值属性
+    NSDictionary *propertys = [self getParams:route];
+    [propertys enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        // 检测这个对象是否存在该属性
+        if ([self checkIsExistPropertyWithInstance:instance verifyPropertyName:key]) {
+            // 利用kvc赋值
+            [instance setValue:obj forKey:key];
+        }
+    }];
+    return instance;
+}
+
+/**
+ 检测route是否正确  即应是XXController或者XXController?xx=xx&yy=yy的格式
+ 
+ @return YES OR NO
+ */
+- (BOOL )checkIsRouteCorrect:(NSString *)route {
+    
+    // 利用正则判断 有待完善
+    return YES;
+}
+
+- (BOOL )checkIsExistPropertyWithInstance:(id)instance verifyPropertyName:(NSString *)verifyPropertyName {
+    unsigned int outCount, i;
+    
+    // 获取对象里的属性列表
+    objc_property_t * properties = class_copyPropertyList([instance
+                                                           class], &outCount);
+    
+    for (i = 0; i < outCount; i++) {
+        objc_property_t property =properties[i];
+        //  属性名转成字符串
+        NSString *propertyName = [[NSString alloc] initWithCString:property_getName(property) encoding:NSUTF8StringEncoding];
+        // 判断该属性是否存在
+        if ([propertyName isEqualToString:verifyPropertyName]) {
+            free(properties);
+            return YES;
+        }
+    }
+    free(properties);
+    
+    return NO;
+}
+
+/**
+ 获取控制器类名
+ 
+ @param route <#route description#>
+ 
+ @return <#return value description#>
+ */
+- (NSString *)getController:(NSString *)route {
+    
+    NSArray *array = [route componentsSeparatedByString:@"?"];
+    if(array.count > 1) {
+        return [[route componentsSeparatedByString:@"?"] firstObject];
+    }
+    else {
+        return route;
+    }
+}
+
+- (NSDictionary *)getParams:(NSString *)route {
+    
+    NSArray *array = [route componentsSeparatedByString:@"?"];
+    if(array.count > 1) {
+        NSMutableDictionary *params = [NSMutableDictionary dictionary];
+        NSString *paramsString = [[route componentsSeparatedByString:@"?"] lastObject];
+        NSArray *paramsArray = [paramsString componentsSeparatedByString:@"&"];
+        [paramsArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            
+            NSString *objString = [NSString stringWithFormat:@"%@",obj];
+            NSArray *stringArray = [objString componentsSeparatedByString:@"="];
+            if(stringArray.count > 1) {
+                if(checkKeyValueNotNull([stringArray lastObject]) &&
+                   checkKeyValueNotNull([stringArray firstObject])) {
+                    [params setObject:[stringArray lastObject] forKey:[stringArray firstObject]];
+                }
+            }
+        }];
+        return params;
+    }
+    else {
+        return nil;
+    }
+}
+
+BOOL checkKeyValueNotNull(id object) {
+    
+    if ([object isKindOfClass:[NSNull class]] || object == nil) {
+        return NO;
+    }
+    else {
+        if ([object isKindOfClass:[NSString class]]) {
+            NSString *str = (NSString *)object;
+            if ([str isEqualToString:@""]) {
+                return NO;
+            }
+            else {
+                return YES;
+            }
+        }
+        else if ([object isKindOfClass:[NSURL class]]) {
+            NSURL *url = (NSURL *)object;
+            if ([[NSString stringWithFormat:@"%@",url] isEqualToString:@""]) {
+                return NO;
+            }
+            else {
+                return YES;
+            }
+        }
+        else if ([object isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *dic = (NSDictionary *)object;
+            if (dic.count <= 0) {
+                return NO;
+            }
+            else {
+                return YES;
+            }
+        }
+        else if ([object isKindOfClass:[NSArray class]]) {
+            NSArray *arr = (NSArray *)object;
+            if (arr.count <= 0) {
+                return NO;
+            }
+            else {
+                return YES;
+            }
+        }
+        else if ([object isKindOfClass:[NSNumber class]]) {
+            return YES;
+        }
+        else {
+            return NO;
+        }
+    }
+}
+
+- (UIViewController *)getCurrentVC
+{
+    UIViewController *result = nil;
+    
+    UIWindow * window = [[UIApplication sharedApplication] keyWindow];
+    if (window.windowLevel != UIWindowLevelNormal) {
+        
+        NSArray *windows = [[UIApplication sharedApplication] windows];
+        for(UIWindow * tmpWin in windows) {
+            
+            if (tmpWin.windowLevel == UIWindowLevelNormal) {
+                window = tmpWin;
+                break;
+            }
+        }
+    }
+    UIView *frontView = [[window subviews] objectAtIndex:0];
+    id nextResponder = [frontView nextResponder];
+    
+    if ([nextResponder isKindOfClass:[UIViewController class]])
+        result = nextResponder;
+    else
+        result = window.rootViewController;
+    
+    return result;
+}
+
+- (UIViewController *)getPresentedViewController
+{
+    UIViewController *appRootVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+    UIViewController *topVC = appRootVC;
+    if (topVC.presentedViewController) {
+        topVC = topVC.presentedViewController;
+    }
+    
+    return topVC;
+}
+
+@end

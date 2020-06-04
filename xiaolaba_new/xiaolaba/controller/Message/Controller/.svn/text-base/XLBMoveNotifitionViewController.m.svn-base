@@ -1,0 +1,115 @@
+//
+//  XLBMoveNotifitionViewController.m
+//  xiaolaba
+//
+//  Created by lin on 2017/7/26.
+//  Copyright © 2017年 jxcode. All rights reserved.
+//
+
+#import "XLBMoveNotifitionViewController.h"
+#import "XLBMoveNotifitionCell.h"
+#import "XLBNetwork.h"
+#import "MoveNotiDetailVC.h"
+@interface XLBMoveNotifitionViewController ()
+
+@end
+
+@implementation XLBMoveNotifitionViewController
+
+- (void)viewDidLoad {
+	[super viewDidLoad];
+
+	self.bql_title = @"挪车通知";
+	[self getDataReq];
+}
+- (void)getDataReq {
+	NSMutableDictionary *page = [NSMutableDictionary dictionary];
+	[page setObject:@"1" forKey:@"curr"];
+	[page setObject:@"10" forKey:@"size"];
+//	[page setObject:@"10" forKey:@"owner"];
+	NSMutableDictionary *params = [NSMutableDictionary dictionary];
+	[params setObject:page forKey:@"page"];
+	//	[params setObject:@"1" forKey:@"pageNumber"];
+	//	[params setObject:@"20" forKey:@"pageSize"];
+	//	[params setObject:@"122.0" forKey:@"longitude"];
+	//	[params setObject:@"31.0" forKey:@"latitude"];
+	[self show];
+	BlockWeakSelf(weakSelf, self);
+	[[XLBNetwork network] POST:kMoveCarsMessage params:params cache:NO success:^(id result) {
+		NSLog(@"-------------------    挪车消息  %@",result);
+		NSArray *listArr = result[@"list"];
+		[self setup:listArr];
+		[weakSelf hide];
+	} failure:^(NSString *description) {
+		[weakSelf hide];
+	}];
+}
+- (void)setup:(NSArray*)listArr {
+	self.listTableView.rowHeight = UITableViewAutomaticDimension;
+	self.listTableView.backgroundColor = RGB(247, 247, 247);
+	for(int i = 0; i < listArr.count; i ++) {
+		XLBMoveNotifitionModel *model = [[XLBMoveNotifitionModel alloc] init];
+		model.title = listArr[i][@"message"];
+		model.status = [listArr[i][@"status"] intValue];
+		model.time = listArr[i][@"createDate"];
+		model.images = listArr[i][@"img"];
+		[model toStringLog];
+//		model.image = @"";
+//		model.title = @"小喇叭告知您：你的车在花椒路交叉口违规停车了，请速来挪车~您在华江路银行门口堵着我的车了。";
+//		if(i == 0) {
+//			model.status = 0;
+//		} else {
+//			model.status = 1;
+//		}
+//		model.time = @"2017/08/18";
+//		if(i > 1) {
+//			model.images = @[@"http://desk.fd.zol-img.com.cn/t_s1024x768c5/g5/M00/0A/0F/ChMkJ1jCOQiIK4gzAAwoPJwwQtQAAaoGgDd1KAADChU618.jpg",
+//					     @"http://desk.fd.zol-img.com.cn/t_s1024x768c5/g5/M00/0A/0F/ChMkJljCOaiIPd-gAAapj-q98BgAAaoGgM6E1EABqmn446.jpg",
+//					     @"http://desk.fd.zol-img.com.cn/t_s1024x768c5/g5/M00/0F/09/ChMkJlauza6IOuzjAAQRQ6b4SjAAAH9HQJb4NcABBFb471.jpg"];
+//		} else {
+//			model.images = @[];
+//		}
+		
+		[self.dataSource addObject:model];
+	}
+	[self.listTableView reloadData];
+}
+
+- (NSInteger )tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	
+	return self.dataSource.count;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	if (indexPath.row < 2) {
+		return 100;
+	} else {
+		return 200; 
+	}
+}
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	
+	[tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+	XLBMoveNotifitionCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([XLBMoveNotifitionCell class])];
+	if (cell == nil) {
+		cell = [[NSBundle mainBundle] loadNibNamed:NSStringFromClass([XLBMoveNotifitionCell class]) owner:self options:nil].lastObject;
+	}
+	NSLog(@"---------- self.dataSource  %@ ",self.dataSource);
+	cell.model = self.dataSource[indexPath.row];
+	return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	MoveNotiDetailVC *vc = [[MoveNotiDetailVC alloc] init];
+	[self.navigationController pushViewController:vc animated:YES];
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+
+- (void)didReceiveMemoryWarning {
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
+}
+
+ 
+
+@end

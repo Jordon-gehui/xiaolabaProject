@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="XLBMeViewController">
+            <connections>
+                <outlet property="meTable" destination="qmW-OJ-ik2" id="GOK-6j-XBE"/>
+                <outlet property="mtable_bottom" destination="tSR-gI-TCR" id="4jL-Q2-GtT"/>
+                <outlet property="mtable_top" destination="1Fu-ud-gmJ" id="OFB-TF-7yc"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="qmW-OJ-ik2">
+                    <rect key="frame" x="0.0" y="-22" width="375" height="625"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="p7u-Wo-cIl"/>
+                        <outlet property="delegate" destination="-1" id="nnk-Eq-ikz"/>
+                    </connections>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="qmW-OJ-ik2" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="-22" id="1Fu-ud-gmJ"/>
+                <constraint firstItem="qmW-OJ-ik2" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="Nq4-cb-8Kp"/>
+                <constraint firstItem="qmW-OJ-ik2" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" id="Uji-4T-Ecl"/>
+                <constraint firstAttribute="bottom" secondItem="qmW-OJ-ik2" secondAttribute="bottom" constant="64" id="tSR-gI-TCR"/>
+            </constraints>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="Nq4-cb-8Kp"/>
+                    <exclude reference="Uji-4T-Ecl"/>
+                </mask>
+            </variation>
+            <variation key="heightClass=regular-widthClass=compact">
+                <mask key="constraints">
+                    <include reference="Nq4-cb-8Kp"/>
+                    <include reference="Uji-4T-Ecl"/>
+                </mask>
+            </variation>
+        </view>
+    </objects>
+</document>

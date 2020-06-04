@@ -1,0 +1,17 @@
+//
+//  XLBSystemMsgModel.m
+//  xiaolaba
+//
+//  Created by lin on 2017/7/26.
+//  Copyright © 2017年 jxcode. All rights reserved.
+//
+
+#import "XLBSystemMsgModel.h"
+
+@implementation XLBSystemMsgModel
+
+- (void) toStringLog {
+	NSLog(@"------------- %@---%d---%@---%@",self.class,_read,_msg,_time);
+}
+
+@end

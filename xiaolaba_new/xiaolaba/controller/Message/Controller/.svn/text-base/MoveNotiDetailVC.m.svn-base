@@ -1,0 +1,151 @@
+//
+//  MoveNotiDetailVC.m
+//  xiaolaba
+//
+//  Created by huyuming on 2017/8/9.
+//  Copyright © 2017年 jxcode. All rights reserved.
+//
+
+#import "MoveNotiDetailVC.h"
+#import "OwnerHomeVC.h"
+#import "MCStateView.h"
+#import "ComTableViewCell.h"
+#import "MJRefresh.h"
+#import "IQKeyboardManager.h"
+@interface MoveNotiDetailVC ()
+{
+	BOOL isMsg;
+}
+
+@property (weak, nonatomic) IBOutlet MCTableView *listView;
+
+@end
+
+@implementation MoveNotiDetailVC
+
+- (void)viewDidLoad {
+	[super viewDidLoad];
+//	self.bql_rightImg = @"fenxiang";
+	self.bql_title = @"挪车详情";
+	self.automaticallyAdjustsScrollViewInsets = NO;
+	[IQKeyboardManager sharedManager].enable = NO;
+	[self loadTable];
+	[self selendView];
+	
+}
+
+-(void) loadTable {
+	//	self.listView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+	//		[self.listView.mj_header endRefreshing];
+	//	}];
+	//	self.listView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+	//		self.listView.mj_footer.ignoredScrollViewContentInsetBottom = -30;
+	//		[self.listView.mj_footer endRefreshingWithNoMoreData];
+	//	}];
+	
+	NSArray *titleLeftArr = @[@"昵称",@"性别",@"年龄",@"个人认证",@"所在地",@"车型",@"个性签名"];
+	NSArray *rightTitleArr = @[@"TimChen",@"男",@"22",@"已认证",@"上海市",@"兰博基尼",@"我就是人傻钱多，爱中彩票"];
+	
+	self.listView.separatorStyle = UITableViewCellSeparatorStyleNone;
+	self.listView.backgroundColor = [UIColor colorWithHexString:@"f7f7f7"];
+	[self.listView.mcSections(1) mcLayoutReturnItmeIndexPath:^(NSIndexPath *indexPath, MCTableViewDataSource *mcLayout){
+		mcLayout.mcHeaderHeight(0.1).mcRows(1);
+		if (indexPath.row == 0) {
+			mcLayout.mcItmeName(@"MoveDetailHeadCell");
+		} else if (indexPath.row == 1) {
+//			mcLayout.mcItmeName(@"SituationAndMesCell");
+		} else if (indexPath.row < 10) {
+//			if (!isMsg) {
+//				mcLayout.mcItmeName(@"HeadSituationCell");
+//			} else {
+//				mcLayout.mcItmeName(@"LBAndTFCell");
+//			}
+		}
+	} setReturnCell:^(NSIndexPath *indexPath, MCTableViewCell *itme) {
+		ComTableViewCell *cell = (ComTableViewCell *)itme;
+		if (!isMsg) {
+			if (indexPath.row == 0) {
+				cell.mcButtomHeight(10);
+			} else if (indexPath.row == 2) {
+				cell.line.hidden = NO;
+				cell.titleLB.text = @"余文乐";
+				//			cell.bgView.hidden = YES;
+				//			cell.height = 120;
+			} else if (indexPath.row == 3) {
+				cell.titleLB.text = @"余文乐";
+			} else if (indexPath.row == 4) {
+				cell.mcButtomHeight(10);
+			}  else if (indexPath.row == 5) {
+				
+			}
+		} else {   //信息
+			if (indexPath.row > 1) {
+				cell.titleLB.text = titleLeftArr[indexPath.row-2];
+				cell.txtF.text = rightTitleArr[indexPath.row-2];
+			}
+		}
+		
+	}];
+}
+//点击事件
+- (void)selendView {
+	[self.listView mcReturnSelendCellIndexPath:^(NSIndexPath *indexPath, NSInteger tag, id data){
+		[self.view endEditing:YES];
+		ComTableViewCell *cell = [self.listView cellForRowAtIndexPath:indexPath];
+		if (indexPath.row == 1) {
+			__block int leftOff = 0;
+			if (tag == 0) {
+				isMsg = NO;
+				[cell.button setTitleColor:[UIColor colorWithHexString:@"00b5c4"] forState:UIControlStateNormal];
+				[cell.secBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+				//				[UIView animateWithDuration:2.0 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+				//
+				//					while (leftOff > -1) {
+				//						leftOff --;
+				//						NSLog(@" --------        leftOff  %d   ",leftOff);
+				//						cell.lineLeftOff.constant = leftOff;
+				//					}
+				//				} completion:nil];
+			} else {
+				isMsg = YES;
+				[cell.secBtn setTitleColor:[UIColor colorWithHexString:@"00b5c4"] forState:UIControlStateNormal];
+				[cell.button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+				leftOff = kScreenWidth/2;
+				//				dispatch_async(dispatch_get_main_queue(), ^{
+				//					[UIView animateWithDuration:1 delay:3.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+				//						while (leftOff <= kScreenWidth/2) {
+				//							leftOff ++;
+				//							NSLog(@" --------        leftOff  %d   ",leftOff);
+				//							cell.lineLeftOff.constant = leftOff;
+				//						}
+				//					} completion:nil];
+				//				});
+			}
+			cell.lineLeftOff.constant = leftOff;
+			//			[self.listView reloadData];
+			
+			NSMutableArray *ipArr = [NSMutableArray array];
+			for (int i = 2; i < 9; i++) {
+				NSIndexPath *ip = [NSIndexPath indexPathForRow:i inSection:0];
+				[ipArr addObject:ip];
+				//				[self.listView reloadSections:ip withRowAnimation:UITableViewRowAnimationNone];
+			}
+			[self.listView reloadRowsAtIndexPaths:ipArr withRowAnimation:UITableViewRowAnimationAutomatic];
+		}
+		
+	}];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+//	self.tabBarController.tabBar.hidden = YES;
+//	self.hideNavigation = YES;
+}
+- (void)viewDidDisappear:(BOOL)animated {
+	[IQKeyboardManager sharedManager].enable = YES;
+}
+- (void)didReceiveMemoryWarning {
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
+}
+
+@end

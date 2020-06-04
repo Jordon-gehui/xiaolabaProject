@@ -1,0 +1,13 @@
+//
+//  MoveNotiDetailVC.h
+//  xiaolaba
+//
+//  Created by huyuming on 2017/8/9.
+//  Copyright © 2017年 jxcode. All rights reserved.
+//
+
+#import "XLBBaseViewController.h"
+
+@interface MoveNotiDetailVC : XLBBaseViewController
+
+@end

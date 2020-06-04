@@ -1,0 +1,26 @@
+//
+//  XLBMoveNotifitionModel.h
+//  xiaolaba
+//
+//  Created by lin on 2017/7/26.
+//  Copyright © 2017年 jxcode. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@interface XLBMoveNotifitionModel : NSObject
+
+@property (nonatomic, copy) NSString *image;
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *time;
+@property (nonatomic, strong) NSArray *images;
+- (void) toStringLog ;
+/**
+ 状态
+ 0：无图未读
+ 1：有图未读
+ 2：已读
+ */
+@property (nonatomic, assign) NSUInteger status;
+
+@end

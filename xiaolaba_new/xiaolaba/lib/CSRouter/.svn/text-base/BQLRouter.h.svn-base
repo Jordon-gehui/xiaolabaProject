@@ -1,0 +1,43 @@
+//
+//  BQLRouter.h
+//  BQLProject
+//
+//  Created by biqinglin on 2016/12/20.
+//  Copyright © 2016年 biqinglin. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@interface BQLRouter : NSObject
+
+// 不支持复杂的参数传递（例如一个url连接），还有待提高！
+
++ (instancetype)router;
+
+
+/**
+ 控制器push跳转
+
+ @param route 类似url的一个路径 例如跳转至XXController route=@"XXController"
+              若带参数跳转如参数id=1001，参数type=1 则route=@"XXController?id=1001&type=1"
+              注意格式要正确即?区分所跳转控制器与参数，&区分各参数
+ @return 能成功跳转返回YES 否则返回NO
+ */
+- (BOOL )push:(NSString *)route hideBar:(BOOL )hide;
+
+/**
+ 控制器present跳转
+ 
+ @param route 同上
+ */
+- (BOOL )present:(NSString *)route;
+
+/**
+ 系统跳转 如跳转至appstore中的某个应用下载页面、打电话、跳转到其他app(需配置白名单)
+
+ @param url url
+ @return 打开成功or失败
+ */
+- (BOOL )open:(NSString *)url;
+
+@end

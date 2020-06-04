@@ -1,0 +1,55 @@
+//
+//  XLBMsgSystemCell.m
+//  xiaolaba
+//
+//  Created by lin on 2017/7/26.
+//  Copyright © 2017年 jxcode. All rights reserved.
+//
+
+#import "XLBMsgSystemCell.h"
+#import "UILabel+BULabel.h"
+
+@interface XLBMsgSystemCell ()
+
+@property (weak, nonatomic) IBOutlet UIImageView *image;
+@property (weak, nonatomic) IBOutlet UILabel *message;
+@property (weak, nonatomic) IBOutlet UILabel *time;
+@property (weak, nonatomic) IBOutlet UILabel *status;
+@end
+
+@implementation XLBMsgSystemCell
+
+- (void)awakeFromNib {
+	[super awakeFromNib];
+	// Initialization code
+	
+}
+
+- (void)setModel:(XLBSystemMsgModel *)model {
+	
+	NSString *imagename = @"";
+	UIColor *color = nil;
+	color = RGB(22, 22, 22);
+	if(model.read) {
+		self.time.textColor = color;
+ 	} else {
+		self.time.textColor = [UIColor redColor];
+	}
+	self.status.hidden = model.read;
+	self.image.image = [UIImage imageNamed:imagename];
+	self.message.text = model.msg;
+	self.time.text = model.time;
+	self.message.textColor = color;
+//	self.message.lineBreakMode = UILineBreakModeClip;
+//	self.message.text = [model.msg stringByAppendingString:@"\n\n\n\n\n\n\n\n\n\n\n"];
+//	[self.message bql_setRowSpace:4];
+	_model = model;
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+	[super setSelected:selected animated:animated];
+	
+	// Configure the view for the selected state
+}
+
+@end

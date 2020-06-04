@@ -1,0 +1,156 @@
+//
+//  XLBMoveNotifitionCell.m
+//  xiaolaba
+//
+//  Created by lin on 2017/7/26.
+//  Copyright © 2017年 jxcode. All rights reserved.
+//
+
+#import "XLBMoveNotifitionCell.h"
+#import "masonry.h"
+
+@interface XLBMoveNotifitionCell ()
+{
+	CGFloat image_space;
+	CGFloat image_height;
+	CGFloat content_height;
+}
+
+@property (weak, nonatomic) IBOutlet UIImageView *image;
+@property (weak, nonatomic) IBOutlet UILabel *title;
+@property (weak, nonatomic) IBOutlet UILabel *time;
+@property (weak, nonatomic) IBOutlet UIView *contentImagesView;
+@property (weak, nonatomic) IBOutlet UILabel *status;
+@property (nonatomic, strong) NSMutableArray <UIImageView *>*imageViewArray;
+
+@end
+
+@implementation XLBMoveNotifitionCell
+
+- (void)awakeFromNib {
+	[super awakeFromNib];
+	// Initialization code
+	
+	image_space = 8;
+	image_height = (kSCREEN_WIDTH - 90 - image_space * 2) / 3.0;
+	content_height = image_height + 0;
+	
+	UIView *lastView = nil;
+	for(int i = 0; i < 3; i ++) {
+		
+		UIImageView *imageView = [[UIImageView alloc] init];
+		imageView.hidden = YES;
+		[self.contentImagesView addSubview:imageView];
+		if(lastView) {
+			[imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+				
+				make.left.equalTo(lastView.mas_right).with.offset(image_space);
+				make.top.equalTo(lastView.mas_top);
+				make.width.height.equalTo(lastView);
+			}];
+		}
+		else {
+			[imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+				
+				make.left.mas_equalTo(0);
+				make.top.mas_equalTo(0);
+				make.width.height.mas_equalTo(image_height);
+			}];
+		}
+		lastView = imageView;
+		[self.imageViewArray addObject:imageView];
+	}
+}
+
+- (void)setModel:(XLBMoveNotifitionModel *)model {
+	
+	NSString *imagename = @"";
+	//    switch (model.status) {
+	//        case 0: {
+	//            imagename = @"xin";
+	//            self.title.textColor = RGB(33, 33, 33);
+	//            self.time.textColor = RGB(169, 169, 169);
+	//        }
+	//            break;
+	//        case 1: {
+	//            imagename = @"xinxi";
+	//            self.title.textColor = RGB(33, 33, 33);
+	//            self.time.textColor = RGB(169, 169, 169);
+	//        }
+	//            break;
+	//        case 2: {
+	//            imagename = @"dakai";
+	//            self.title.textColor = RGB(211, 211, 211);
+	//            self.time.textColor = RGB(211, 211, 211);
+	//        }
+	//            break;
+	//
+	//        default:
+	//            break;
+	//    }
+	self.title.textColor = RGB(33, 33, 33);
+	self.status.hidden = model.status;
+	if (model.status) {
+		self.time.textColor = RGB(33, 33, 33);
+	} else {
+		self.time.textColor = [UIColor redColor];
+	}
+//	self.image.image = [UIImage imageNamed:imagename];
+	self.title.text = model.title;
+	self.time.text = [NSString stringWithFormat:@"%@",model.time];
+//	[self.title bql_setRowSpace:5];
+	[self.contentImagesView removeFromSuperview];
+//	if(model.images.count == 0) {
+//		[self.contentImagesView removeFromSuperview];
+//	}
+	//
+	//        [self.contentImagesView mas_updateConstraints:^(MASConstraintMaker *make) {
+	//
+	//            make.height.mas_equalTo(content_height);
+	//        }];
+	//        [model.images enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+	//
+	//            if(idx > 2) {
+	//                *stop = YES;
+	//            }
+	//            UIImageView *imageView = [self.imageViewArray objectAtIndex:idx];
+	//            imageView.hidden = NO;
+	//            [imageView setImageWithURL:[NSURL URLWithString:obj]
+	//                           placeholder:[UIImage imageNamed:@"weitouxiang"]
+	//                               options:YYWebImageOptionSetImageWithFadeAnimation
+	//                               manager:nil
+	//                              progress:nil
+	//                             transform:^UIImage * _Nullable(UIImage * _Nonnull image, NSURL * _Nonnull url) {
+	//                                 return image;
+	//                             } completion:nil];
+	//        }];
+	//    }
+	//    else {
+	//        [self.contentImagesView mas_updateConstraints:^(MASConstraintMaker *make) {
+	//
+	//            make.height.mas_equalTo(0);
+	//        }];
+	//        [self.imageViewArray enumerateObjectsUsingBlock:^(UIImageView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+	//
+	//            obj.hidden = YES;
+	//        }];
+	//	    [self.contentImagesView removeFromSuperview];
+	//    }
+	
+	_model = model;
+}
+
+- (NSMutableArray<UIImageView *> *)imageViewArray {
+	if(!_imageViewArray) {
+		_imageViewArray = [NSMutableArray array];
+	}
+	return _imageViewArray;
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+	[super setSelected:selected animated:animated];
+	
+	// Configure the view for the selected state
+}
+
+@end

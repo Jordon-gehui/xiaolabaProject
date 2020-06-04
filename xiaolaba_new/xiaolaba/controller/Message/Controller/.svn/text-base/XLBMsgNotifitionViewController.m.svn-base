@@ -1,0 +1,100 @@
+//
+//  XLBMsgNotifitionViewController.m
+//  xiaolaba
+//
+//  Created by lin on 2017/7/26.
+//  Copyright © 2017年 jxcode. All rights reserved.
+//
+
+#import "XLBMsgNotifitionViewController.h"
+#import "XLBMsgNotifitionCell.h"
+#import "XLBNetwork.h"
+@interface XLBMsgNotifitionViewController ()
+
+@end
+
+@implementation XLBMsgNotifitionViewController
+
+- (void)viewDidLoad {
+	[super viewDidLoad];
+	// Do any additional setup after loading the view.
+	self.bql_title = @"消息通知";
+	[self getDataReq];
+}
+
+- (void)getDataReq {
+	NSMutableDictionary *page = [NSMutableDictionary dictionary];
+	[page setObject:@"0" forKey:@"curr"];
+	[page setObject:@"10" forKey:@"size"];
+	NSMutableDictionary *params = [NSMutableDictionary dictionary];
+	[params setObject:page forKey:@"page"];
+	//	[params setObject:@"1" forKey:@"pageNumber"];
+	//	[params setObject:@"20" forKey:@"pageSize"];
+	//	[params setObject:@"122.0" forKey:@"longitude"];
+	//	[params setObject:@"31.0" forKey:@"latitude"];
+	[self show];
+	BlockWeakSelf(weakSelf, self);  //kFindFriendFromCar
+	[[XLBNetwork network] POST:kSociaMessage params:params cache:NO success:^(id result) {
+		NSLog(@"-------------------    消息通知  %@",result);
+		NSArray *listArr = result[@"list"];
+		[self setup:listArr];
+		[weakSelf hide];
+	} failure:^(NSString *description) {
+		[weakSelf hide];
+	}];
+}
+- (void)setup:(NSArray*)listArr {
+	self.listTableView.rowHeight = 70;
+	self.listTableView.backgroundColor = RGB(247, 247, 247);
+	for(int i = 0; i < listArr.count; i ++) {
+		
+		XLBMsgNotifitionModel *model = [[XLBMsgNotifitionModel alloc] init];
+		model.image = @"";
+		model.title = listArr[i][@"message"];
+//		model.subtitle = @"你已和对方成为好友，快来发送消息";
+		model.status = [listArr[i][@"status"] intValue];
+		[self.dataSource addObject:model];
+	}
+	[self.listTableView reloadData];
+}
+
+- (NSInteger )tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	
+	return self.dataSource.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	[tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+	XLBMsgNotifitionCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([XLBMsgNotifitionCell class])];
+	if (cell == nil) {
+		cell = [[NSBundle mainBundle] loadNibNamed:NSStringFromClass([XLBMsgNotifitionCell class]) owner:self options:nil].lastObject;
+	}
+	cell.model = self.dataSource[indexPath.row];
+	cell.lineV.hidden = indexPath.row == self.dataSource.count-1;
+	return cell;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return 70;
+}
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)didReceiveMemoryWarning {
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
+}
+
+/*
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
+
+@end
